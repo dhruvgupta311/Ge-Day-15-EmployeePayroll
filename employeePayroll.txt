@@ -1,0 +1,3 @@
+ID: 1, Name: John Doe, Salary: 50000.0
+ID: 2, Name: Jane Smith, Salary: 60000.0
+ID: 3, Name: Bob Brown, Salary: 45000.0

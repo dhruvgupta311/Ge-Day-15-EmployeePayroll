@@ -1,115 +1,69 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
+
+class EmployeePayrollData {
+    int id;
+    String name;
+    double salary;
+
+    // Constructor
+    public EmployeePayrollData(int id, String name, double salary) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    // Convert Employee object to String for writing to file
+    @Override
+    public String toString() {
+        return "ID: " + id + ", Name: " + name + ", Salary: " + salary;
+    }
+}
 
 public class Main {
+
     public static void main(String[] args) {
-        String directoryPath = "testDir";
-        String filePath = directoryPath + "/testFile.txt";
-        String extension = ".txt";
+        // Create some test EmployeePayrollData objects
+        EmployeePayrollData emp1 = new EmployeePayrollData(1, "John Doe", 50000);
+        EmployeePayrollData emp2 = new EmployeePayrollData(2, "Jane Smith", 60000);
+        EmployeePayrollData emp3 = new EmployeePayrollData(3, "Bob Brown", 45000);
 
-        // 1. Check if File Exists
-        checkFileExists(filePath);
+        // Store these objects in a list
+        List<EmployeePayrollData> employeeList = new ArrayList<>();
+        employeeList.add(emp1);
+        employeeList.add(emp2);
+        employeeList.add(emp3);
 
-        // 2. Create a Directory
-        createDirectory(directoryPath);
+        // Write Employee Payroll to a file
+        writeEmployeePayrollToFile(employeeList, "employeePayroll.txt");
 
-        // 3. Create an Empty File
-        createEmptyFile(filePath);
-
-        // 4. Check if File Exists Again
-        checkFileExists(filePath);
-
-        // 5. List Files, Directories, and Files with Specific Extension
-        listFilesInDirectory(directoryPath, extension);
-
-        // 6. Delete File
-        deleteFile(filePath);
-
-        // 7. Check File Not Exist
-        checkFileExists(filePath);
+        // Count number of entries in the file to ensure the operation worked
+        countFileEntries("employeePayroll.txt");
     }
 
-    // Method to check if a file exists
-    private static void checkFileExists(String filePath) {
-        File file = new File(filePath);
-        if (file.exists()) {
-            System.out.println("File exists: " + filePath);
-        } else {
-            System.out.println("File does not exist: " + filePath);
-        }
-    }
-
-    // Method to create a directory
-    private static void createDirectory(String directoryPath) {
-        File directory = new File(directoryPath);
-        if (!directory.exists()) {
-            if (directory.mkdir()) {
-                System.out.println("Directory created: " + directoryPath);
-            } else {
-                System.out.println("Failed to create directory: " + directoryPath);
+    // Method to write employee payroll data to a file
+    private static void writeEmployeePayrollToFile(List<EmployeePayrollData> employeeList, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (EmployeePayrollData employee : employeeList) {
+                writer.write(employee.toString());
+                writer.newLine();
             }
-        } else {
-            System.out.println("Directory already exists: " + directoryPath);
-        }
-    }
-
-    // Method to create an empty file
-    private static void createEmptyFile(String filePath) {
-        File file = new File(filePath);
-        try {
-            if (file.createNewFile()) {
-                System.out.println("Empty file created: " + filePath);
-            } else {
-                System.out.println("File already exists: " + filePath);
-            }
+            System.out.println("Employee payroll data written to file successfully.");
         } catch (IOException e) {
-            System.out.println("Error creating file: " + e.getMessage());
+            System.err.println("Error writing to file: " + e.getMessage());
         }
     }
 
-    // Method to delete a file
-    private static void deleteFile(String filePath) {
-        File file = new File(filePath);
-        if (file.exists()) {
-            if (file.delete()) {
-                System.out.println("File deleted: " + filePath);
-            } else {
-                System.out.println("Failed to delete file: " + filePath);
+    // Method to count the number of entries in the file
+    private static void countFileEntries(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            int lineCount = 0;
+            while (reader.readLine() != null) {
+                lineCount++;
             }
-        } else {
-            System.out.println("File does not exist: " + filePath);
-        }
-    }
-
-    // Method to list files, directories, and files with specific extension
-    private static void listFilesInDirectory(String directoryPath, String extension) {
-        File directory = new File(directoryPath);
-        if (directory.exists() && directory.isDirectory()) {
-            System.out.println("\nContents of directory: " + directoryPath);
-
-            // List all files and directories
-            File[] files = directory.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isDirectory()) {
-                        System.out.println("Directory: " + file.getName());
-                    } else {
-                        System.out.println("File: " + file.getName());
-                    }
-                }
-
-                // List files with specific extension
-                System.out.println("\nFiles with extension " + extension + ":");
-                for (File file : files) {
-                    if (file.isFile() && file.getName().endsWith(extension)) {
-                        System.out.println(file.getName());
-                    }
-                }
-            } else {
-                System.out.println("Directory is empty.");
-            }
-        } else {
-            System.out.println("Directory does not exist: " + directoryPath);
+            System.out.println("Number of entries in the file: " + lineCount);
+        } catch (IOException e) {
+            System.err.println("Error reading from file: " + e.getMessage());
         }
     }
 }
