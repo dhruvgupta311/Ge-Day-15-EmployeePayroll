@@ -1,25 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-class EmployeePayrollData {
-    int id;
-    String name;
-    double salary;
-
-    // Constructor
-    public EmployeePayrollData(int id, String name, double salary) {
-        this.id = id;
-        this.name = name;
-        this.salary = salary;
-    }
-
-    // Convert Employee object to String for writing to file
-    @Override
-    public String toString() {
-        return "ID: " + id + ", Name: " + name + ", Salary: " + salary;
-    }
-}
-
 public class Main {
 
     public static void main(String[] args) {
@@ -35,10 +16,14 @@ public class Main {
         employeeList.add(emp3);
 
         // Write Employee Payroll to a file
-        writeEmployeePayrollToFile(employeeList, "employeePayroll.txt");
+        String filename = "employeePayroll.txt";
+        writeEmployeePayrollToFile(employeeList, filename);
 
-        // Count number of entries in the file to ensure the operation worked
-        countFileEntries("employeePayroll.txt");
+        // Print the employee payroll entries from the file
+        printEmployeePayrollFromFile(filename);
+
+        // Count the number of entries in the file to ensure the operation worked
+        countFileEntries(filename);
     }
 
     // Method to write employee payroll data to a file
@@ -54,6 +39,19 @@ public class Main {
         }
     }
 
+    // Method to print employee payroll data from a file
+    private static void printEmployeePayrollFromFile(String filename) {
+        System.out.println("\nPrinting Employee Payroll Data from File:\n");
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading from file: " + e.getMessage());
+        }
+    }
+
     // Method to count the number of entries in the file
     private static void countFileEntries(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
@@ -61,7 +59,7 @@ public class Main {
             while (reader.readLine() != null) {
                 lineCount++;
             }
-            System.out.println("Number of entries in the file: " + lineCount);
+            System.out.println("\nNumber of entries in the file: " + lineCount);
         } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage());
         }
